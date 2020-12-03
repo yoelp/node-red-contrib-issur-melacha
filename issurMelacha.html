@@ -4,8 +4,8 @@
         color: '#a6bbcf',
         defaults: {
             name: {value:""},
-			lat: {value: 0},
-			lon: {value: 0},
+			lat: {value: 0, required:true},
+			lon: {value: 0, required:true},
 			diaspora: {value:true},
 			startoffset: {value:0},
 			endoffset: {value:72}
@@ -57,20 +57,32 @@
     </div>
 	<div class="form-row checkbox-field">
 		<label for="node-input-diaspora"><i class="fa fa-map"></i> Diaspora</label>
-        <input type="checkbox" checked id="node-input-diaspora">
+        <input type="checkbox" checked id="node-input-diaspora" style="width:20px;margin-bottom:4px;">
     </div>
 	<hr/>
 	<h5>Custom Zmanim Offset (in minutes)</h5>
 	<div class="form-row">
-        <label for="node-input-startoffset" class="large-label"><i class="fa fa-time"></i>Start Offset (based on Sunset - default 0)</label>
+        <label for="node-input-startoffset" class="large-label" style="width:100%"><i class="fa fa-time"></i>Start Offset (based on Sunset - default 0)</label>
         <input type="text" id="node-input-startoffset" placeholder="0">
     </div>
 	<div class="form-row">
-        <label for="node-input-endoffset" class="large-label"><i class="fa fa-time"></i>End Offset (based on Sunset - default 72 min)</label>
+        <label for="node-input-endoffset" class="large-label" style="width:100%"><i class="fa fa-time"></i>End Offset (based on Sunset - default 72 min)</label>
         <input type="text" id="node-input-endoffset" placeholder="72">
     </div>
 </script>
 
 <script type="text/html" data-help-name="issur-melacha">
-    <p>A simple node that converts the message payloads into all lower-case characters</p>
+	<h3>Overview</h3>
+    <p>Issur Melacha is a simple filter which will output an incoming msg to 2 different paths depending if an Issur Melacha (on Jewish Holidays and Shabbet) is in effect.</p>
+	<h3>Options</h3>
+	<h4>Lat (required)</h4>
+	The Latitude to calculate the Zmanim.
+	<h4>Lon (required)</h4>
+	The Longitude to calculate the Zmanim.
+	<h4>Diaspora</h4>
+	Whether to apply Zmanim for the Diaspora (2 days on Holidays).
+	<h4>Start Offset</h4>
+	You can add a custom offset (in minutes) calculated on Sunset when the Zman for Issur Melacha starts (can be either positive or negative), the default is at Sunset.
+	<h4>End Offset</h4>
+	You can add a custom offset (in minutes) calculated on Sunset when the Zman for Issur Melacha ends (can be either positive or negative), the default is 72 min after Sunset.
 </script>
