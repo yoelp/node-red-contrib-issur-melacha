@@ -1,0 +1,76 @@
+<script type="text/javascript">
+    RED.nodes.registerType('issur-melacha',{
+        category: 'function',
+        color: '#a6bbcf',
+        defaults: {
+            name: {value:""},
+			lat: {value: 0},
+			lon: {value: 0},
+			diaspora: {value:true},
+			startoffset: {value:0},
+			endoffset: {value:72}
+        },
+        inputs:1,
+        outputs:2,
+		outputLabels: ["In Effect", "Not in Effect"],
+        icon: "file.png",
+        label: function() {
+            return this.name||"Issur Melacha?";
+        },
+		oneditprepare: function() {
+            if (($("#node-input-lat").val() === "0") && ($("#node-input-lon").val() === "0")) {
+                if ("geolocation" in navigator) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        $("#node-input-lat").val(Number(position.coords.latitude.toFixed(5)));
+                        $("#node-input-lon").val(Number(position.coords.longitude.toFixed(5)));
+                    });
+                }
+            }
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="issur-melacha">
+	<style>
+		div.checkbox-field{
+			max-width:200px;
+		}
+		div.checkbox-field input {
+			width:20px;
+			margin-bottom:4px;
+		}
+		.large-label {
+			width:100%;
+		}
+	</style>
+	<div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Issur Melacha?">
+    </div>
+    <div class="form-row">
+        <label for="node-input-lat"><i class="fa fa-compass"></i> Lat</label>
+        <input type="text" id="node-input-lat" placeholder="0">
+    </div>
+	<div class="form-row">
+        <label for="node-input-lon"><i class="fa fa-compass"></i> Lon</label>
+        <input type="text" id="node-input-lon" placeholder="0">
+    </div>
+	<div class="form-row checkbox-field">
+		<label for="node-input-diaspora"><i class="fa fa-map"></i> Diaspora</label>
+        <input type="checkbox" checked id="node-input-diaspora">
+    </div>
+	<hr/>
+	<h5>Custom Zmanim Offset (in minutes)</h5>
+	<div class="form-row">
+        <label for="node-input-startoffset" class="large-label"><i class="fa fa-time"></i>Start Offset (based on Sunset - default 0)</label>
+        <input type="text" id="node-input-startoffset" placeholder="0">
+    </div>
+	<div class="form-row">
+        <label for="node-input-endoffset" class="large-label"><i class="fa fa-time"></i>End Offset (based on Sunset - default 72 min)</label>
+        <input type="text" id="node-input-endoffset" placeholder="72">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="issur-melacha">
+    <p>A simple node that converts the message payloads into all lower-case characters</p>
+</script>

@@ -1,0 +1,17 @@
+{
+  "name": "node-red-contrib-issurmelacha",
+  "version": "0.1.1",
+  "description": "A Filter for Node-Red to divide the flow when an Issur melacha is in effect",
+  "node-red": {
+    "nodes": {
+      "issur-melacha": "issurMelacha.js"
+    }
+  },
+  "author": "Yoel Porgesz",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "he-date": "^1.2.2",
+    "kosher-zmanim": "^0.7.1"
+  }
+}
