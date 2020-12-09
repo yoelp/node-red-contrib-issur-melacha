@@ -11,3 +11,5 @@ Whether to apply Zmanim for the Diaspora (2 days on Holidays).
 You can add a custom offset (in minutes) calculated on Sunset when the Zman for Issur Melacha starts (can be either positive or negative), the default is at Sunset.
 ### End Offset
 You can add a custom offset (in minutes) calculated on Sunset when the Zman for Issur Melacha ends (can be either positive or negative), the default is 72 min after Sunset.
+### Repeat msg
+While an Issur Melacha is in effect the msg can be repated by a preset interval.

@@ -96,59 +96,92 @@ module.exports = function(RED) {
         var node = this;
 		node.startoffset = Number(config.startoffset);
 		node.endoffset = Number(config.endoffset);
-		function isurInEffect(end){
+		node.intervalSettings = {
+			msg: null,
+			delay: Number(config.delay) && Number(config.delaytype) * Number(config.delay),
+			interval: null,
+			
+		}
+		function isurInEffectNow(end){
 			var zmanim = kosherZmamin.getZmanimJson({
 				latitude: node.lat,
 				longitude: node.lon
 			}).BasicZmanim;
 			if(end){
 				// check if before end zman
-				if( ((new Date(zmanim.Tzais72)).getTime() + endoffset) - Date.now() >= 0)
+				if( ((new Date(zmanim.Tzais72)).getTime() + node.endoffset) - Date.now() >= 0)
 					return true;
 			} else {
 				// check if after start zman
-				if( ((new Date(zmanim.Sunset)).getTime() + startoffset) - Date.now() <= 0)
+				if( ((new Date(zmanim.Sunset)).getTime() + node.startoffset) - Date.now() <= 0)
 					return true;
 			}
 			return false;
 		}
-        node.on('input', function(msg) {
-            var day = (new Date()).getDay();
-			var chul = config.diaspora;
-			var il = !chul;
-			var heDate = new HeDate()
-			var jDay = heDate.getDate();
-			var jMonth = getHeDateMonth(heDate);
-			var usor = false;
-			if(
-				(chul && isEventInHolidays(jMonth,jDay,"chulFull")) ||
-				(il && isEventInHolidays(jMonth,jDay,"ilFull"))
-			) {
-				// full day
-				usor = true;
-			} else if(
-				(
-				day === 5 || // friday
-				isEventInHolidays(jMonth,jDay,"start") // erev yo"t
-				) && isurInEffect(0)
-			){
-				// start
-				usor = true;
-			} else if( 
-				(
-					day === 6 || //shabbes
-					(il && isEventInHolidays(jMonth,jDay,"ilEnd")) || // yo"t end il
-					(chul && isEventInHolidays(jMonth,jDay,"chulEnd")) // yo"t end il
- 				) && isurInEffect(1)
-			){
-				// end
-				usor = true;
+		function isIssurMelachaInEffect(){
+				var day = (new Date()).getDay();
+				var chul = config.diaspora;
+				var il = !chul;
+				var heDate = new HeDate()
+				var jDay = heDate.getDate();
+				var jMonth = getHeDateMonth(heDate);
+				var usor = false;
+				if(
+					(chul && isEventInHolidays(jMonth,jDay,"chulFull")) ||
+					(il && isEventInHolidays(jMonth,jDay,"ilFull"))
+				) {
+					// full day
+					usor = true;
+				} else if(
+					(
+					day === 5 || // friday
+					isEventInHolidays(jMonth,jDay,"start") // erev yo"t
+					) && isurInEffectNow(0)
+				){
+					// start
+					usor = true;
+				} else if( 
+					(
+						day === 6 || //shabbes
+						(il && isEventInHolidays(jMonth,jDay,"ilEnd")) || // yo"t end il
+						(chul && isEventInHolidays(jMonth,jDay,"chulEnd")) // yo"t end il
+					) && isurInEffectNow(1)
+				){
+					// end
+					usor = true;
+				}
+				return usor
 			}
-			if(usor)
+        node.on('input', function(msg) {
+			var usor = isIssurMelachaInEffect();
+			if(usor){
 				node.send([msg, null]);
-			else 
+				if(node.intervalSettings.interval){
+					clearInterval(node.intervalSettings.interval);
+				}
+				if(node.intervalSettings.delay){
+					node.intervalSettings.msg = msg;
+					node.intervalSettings.interval = setInterval(function(){
+						if(!isIssurMelachaInEffect()){
+							clearInterval(node.intervalSettings.interval);
+							return;
+						}
+						node.send([node.intervalSettings.msg, null]);
+					}, node.intervalSettings.delay);
+				}
+			} else {
+				if(node.intervalSettings.interval){
+					node.intervalSettings.msg = null;
+					clearInterval(node.intervalSettings.interval);
+				}
 				node.send([null, msg]);
+			}
         });
+		node.on('close', function(){
+			if(node.intervalSettings.interval){
+					clearInterval(node.intervalSettings.interval);
+				}
+		});
     }
     RED.nodes.registerType("issur-melacha",IssurMelacha);
 }
