@@ -1,17 +1,16 @@
 
 module.exports = function(RED) {
 	"use strict"
-	var HeDate = require('he-date');
-	var kosherZmamin = require('kosher-zmanim');
+	const HeDate = require('he-date');
+	const kosherZmamin = require('kosher-zmanim');
 	
 	function getHeDateMonth(hedate) {
-		var monthName = hedate.toDateString().match(/^.+?\d\d (.+) \d{4}$/)[1];
-		return monthName
+		return hedate.toDateString().match(/^.+?\d\d (.+) \d{4}$/)[1];
 	}
 	function isEventInHolidays(month, day, evt){
 		return holidays[month] && holidays[month][day] && holidays[month][day][evt];
 	}
-	var holidays = {
+	const holidays = {
 		"Nisan": {
 			// Day is 1 based;
 			"14" : {
@@ -93,7 +92,7 @@ module.exports = function(RED) {
 	}
     function IssurMelacha(config) {
         RED.nodes.createNode(this,config);
-        var node = this;
+        const node = this;
 		node.startoffset = Number(config.startoffset);
 		node.endoffset = Number(config.endoffset);
 		node.intervalSettings = {
@@ -103,7 +102,7 @@ module.exports = function(RED) {
 			
 		}
 		function isurInEffectNow(end){
-			var zmanim = kosherZmamin.getZmanimJson({
+			const zmanim = kosherZmamin.getZmanimJson({
 				latitude: node.lat,
 				longitude: node.lon
 			}).BasicZmanim;
@@ -119,19 +118,18 @@ module.exports = function(RED) {
 			return false;
 		}
 		function isIssurMelachaInEffect(){
-				var day = (new Date()).getDay();
-				var chul = config.diaspora;
-				var il = !chul;
-				var heDate = new HeDate()
-				var jDay = heDate.getDate();
-				var jMonth = getHeDateMonth(heDate);
-				var usor = false;
+				const day = (new Date()).getDay();
+				const chul = config.diaspora;
+				const il = !chul;
+				const heDate = new HeDate()
+				const jDay = heDate.getDate();
+				const jMonth = getHeDateMonth(heDate);
 				if(
 					(chul && isEventInHolidays(jMonth,jDay,"chulFull")) ||
 					(il && isEventInHolidays(jMonth,jDay,"ilFull"))
 				) {
 					// full day
-					usor = true;
+					return true;
 				} else if(
 					(
 					day === 5 || // friday
@@ -139,7 +137,7 @@ module.exports = function(RED) {
 					) && isurInEffectNow(0)
 				){
 					// start
-					usor = true;
+					return true;
 				} else if( 
 					(
 						day === 6 || //shabbes
@@ -148,13 +146,12 @@ module.exports = function(RED) {
 					) && isurInEffectNow(1)
 				){
 					// end
-					usor = true;
+					return true;
 				}
-				return usor
+				return false;
 			}
         node.on('input', function(msg) {
-			var usor = isIssurMelachaInEffect();
-			if(usor){
+			if(isIssurMelachaInEffect()){
 				node.send([msg, null]);
 				if(node.intervalSettings.interval){
 					clearInterval(node.intervalSettings.interval);
