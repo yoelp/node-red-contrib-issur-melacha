@@ -103,8 +103,8 @@ module.exports = function(RED) {
 		}
 		function isurInEffectNow(end){
 			const zmanim = kosherZmamin.getZmanimJson({
-				latitude: node.lat,
-				longitude: node.lon
+				latitude: config.lat,
+				longitude: config.lon
 			}).BasicZmanim;
 			if(end){
 				// check if before end zman
