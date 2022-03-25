@@ -7,6 +7,10 @@
       "issur-melacha": "issurMelacha.js"
     }
   },
+  "repository" : {
+    "type" : "git",
+    "url" : "git://github.com/yoelp/node-red-contrib-issurmelacha.git"
+  },
   "keywords": [ "node-red", "Shabbat", "Shabbos", "Issur melacha" ],
   "author": "Yoel Porgesz",
   "license": "MIT",

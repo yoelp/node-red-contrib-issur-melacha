@@ -1,5 +1,5 @@
 # Overview 
-Issur Melacha is a simple filter which will output an incoming msg to 2 different paths depending if an Issur Melacha (on Jewish Holidays and Shabbet) is in effect.
+Issur Melacha is a simple filter which will output an incoming msg to one of two different outputs depending if an Issur Melacha (on Jewish Holidays and Shabbet) is in effect.
 ## Options
 ### Lat (required)
 The Latitude to calculate the Zmanim.
