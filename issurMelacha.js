@@ -158,7 +158,7 @@ module.exports = function(RED) {
 			}
 		}
         node.on('input', function(msg) {
-			const shouldRepeat = Boolean(node.intervalSettings.delay);
+			const shouldRepeat = Boolean(node.intervalSettings.delay) && (!config.onlyifstartonissur || isIssurMelachaInEffect());
 			sendCorrectMsg(msg, isIssurMelachaInEffect());
 			if(shouldRepeat){
 				if(node.intervalSettings.interval){
@@ -166,10 +166,10 @@ module.exports = function(RED) {
 				}
 				node.intervalSettings.msg = msg;
 				node.intervalSettings.interval = setInterval(function(){
-					// if(!isIssurMelachaInEffect()){
-					// 	clearInterval(node.intervalSettings.interval);
-					// 	return;
-					// }
+					if(!isIssurMelachaInEffect() && config.onlyifstartonissur ){
+						clearInterval(node.intervalSettings.interval);
+						return;
+					}
 					if(isIssurMelachaInEffect()){
 						sendCorrectMsg(node.intervalSettings.msg, true);
 					}
