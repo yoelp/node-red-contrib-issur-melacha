@@ -150,28 +150,30 @@ module.exports = function(RED) {
 				}
 				return false;
 			}
-        node.on('input', function(msg) {
-			if(isIssurMelachaInEffect()){
+		function sendCorrectMsg(msg, issur){
+			if(issur){
 				node.send([msg, null]);
-				if(node.intervalSettings.interval){
-					clearInterval(node.intervalSettings.interval);
-				}
-				if(node.intervalSettings.delay){
-					node.intervalSettings.msg = msg;
-					node.intervalSettings.interval = setInterval(function(){
-						if(!isIssurMelachaInEffect()){
-							clearInterval(node.intervalSettings.interval);
-							return;
-						}
-						node.send([node.intervalSettings.msg, null]);
-					}, node.intervalSettings.delay);
-				}
-			} else {
-				if(node.intervalSettings.interval){
-					node.intervalSettings.msg = null;
-					clearInterval(node.intervalSettings.interval);
-				}
+			} else{
 				node.send([null, msg]);
+			}
+		}
+        node.on('input', function(msg) {
+			const shouldRepeat = Boolean(node.intervalSettings.delay);
+			sendCorrectMsg(msg, isIssurMelachaInEffect());
+			if(shouldRepeat){
+				if(node.intervalSettings.interval){
+					clearInterval(node.intervalSettings.interval);
+				}
+				node.intervalSettings.msg = msg;
+				node.intervalSettings.interval = setInterval(function(){
+					// if(!isIssurMelachaInEffect()){
+					// 	clearInterval(node.intervalSettings.interval);
+					// 	return;
+					// }
+					if(isIssurMelachaInEffect()){
+						sendCorrectMsg(node.intervalSettings.msg, true);
+					}
+				}, node.intervalSettings.delay);
 			}
         });
 		node.on('close', function(){
