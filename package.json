@@ -1,17 +1,22 @@
 {
   "name": "node-red-contrib-issurmelacha",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A Filter for Node-Red to divide the flow when an Issur melacha is in effect",
   "node-red": {
     "nodes": {
       "issur-melacha": "issurMelacha.js"
     }
   },
-  "repository" : {
-    "type" : "git",
-    "url" : "git://github.com/yoelp/node-red-contrib-issurmelacha.git"
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/yoelp/node-red-contrib-issurmelacha.git"
   },
-  "keywords": [ "node-red", "Shabbat", "Shabbos", "Issur melacha" ],
+  "keywords": [
+    "node-red",
+    "Shabbat",
+    "Shabbos",
+    "Issur melacha"
+  ],
   "author": "Yoel Porgesz",
   "license": "MIT",
   "dependencies": {
